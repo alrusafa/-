@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>طلب مقابلة المدير العام</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2c6fbb;
+            --secondary: #4ca1af;
+            --accent: #ff7e5f;
+            --dark: #1a3c6c;
+            --light: #f8f9ff;
+            --card-light: #ffffff;
+            --text: #333;
+            --text-light: #555;
+            --gray: #6c757d;
+            --success: #4caf50;
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --shadow-hover: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Tajawal', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #eef2f7 0%, #d9e4f0 100%);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            line-height: 1.6;
+            padding-bottom: 120px;
+        }
+        
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 40vh; /* ارتفاع مناسب لمنع تداخل النص مع الخلفية */
+            background: linear-gradient(135deg, var(--dark) 0%, var(--primary) 100%);
+            z-index: -1;
+            border-bottom-left-radius: 50% 15%;
+            border-bottom-right-radius: 50% 15%;
+        }
+        
+        .splash {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+            background: linear-gradient(135deg, var(--dark) 0%, var(--primary) 100%);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            animation: fadeOut 1s ease-in-out 2s forwards;
+        }
+        
+        .splash-content {
+            text-align: center;
+            animation: fadeInUp 1s ease-in-out;
+        }
+        
+        .splash-logo {
+            width: 130px;
+            height: 130px;
+            background: linear-gradient(135deg, var(--accent), #ff6347);
+            border-radius: 30%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            animation: pulse 2s infinite alternate;
+            transform-origin: center;
+        }
+        
+        .splash-logo i {
+            font-size: 65px;
+            color: white;
+        }
+        
+        .splash-text {
+            color: white;
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin-top: 20px;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .splash-subtext {
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 16px;
+            margin-top: 15px;
+            max-width: 500px;
+            line-height: 1.7;
+        }
+        
+        .loading-bar {
+            width: 300px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+            margin: 40px auto 0;
+            overflow: hidden;
+        }
+        
+        .loading-progress {
+            height: 100%;
+            width: 0%;
+            background: white;
+            border-radius: 3px;
+            animation: loading 2s ease-in-out forwards;
+        }
+        
+        @keyframes loading {
+            to { width: 100%; }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1) rotate(0deg); }
+            100% { transform: scale(1.05) rotate(5deg); }
+        }
+        
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes fadeOut {
+            to { opacity: 0; visibility: hidden; }
+        }
+        
+        .container {
+            max-width: 1200px;
+            padding: 20px;
+            margin: 0 auto;
+            display: none;
+            opacity: 0;
+            animation: fadeIn 0.8s ease-out 0.5s forwards;
+        }
+        
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+            position: relative;
+            padding-top: 50px; /* مسافة أكبر من الخلفية الزرقاء */
+        }
+        
+        .manager-badge-large {
+            width: 250px;
+            height: 250px;
+            background: linear-gradient(135deg, var(--accent), #ff6347);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            animation: pulse 2s infinite alternate;
+            transform-origin: center;
+            overflow: hidden;
+            border: 5px solid white;
+        }
+        
+        .manager-badge-large img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .manager-title {
+            font-size: 18px;
+            font-weight: 800;
+            color: #ffffff; /* لون أبيض ناصع */
+            margin-bottom: 15px;
+            text-shadow: 0 3px 6px rgba(0, 0, 0, 0.5); /* ظل أكثر وضوحاً */
+            position: relative;
+            line-height: 1.7;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 20px;
+            background: rgba(26, 60, 108, 0.4); /* خلفية شبه شفافة */
+            border-radius: 15px;
+            padding: 15px;
+            z-index: 2;
+        }
+        
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 35px;
+            margin-top: 30px;
+        }
+        
+        .card {
+            background: var(--card-light);
+            padding: 35px 30px;
+            border-radius: 25px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            transform: translateY(0);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        .card:hover {
+            transform: translateY(-12px);
+            box-shadow: var(--shadow-hover);
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            z-index: 1;
+        }
+        
+        .card.citizen::before {
+            background: linear-gradient(90deg, var(--secondary), #3d9e8f);
+        }
+        
+        .card.employee::before {
+            background: linear-gradient(90deg, var(--accent), #ff6347);
+        }
+        
+        .card-icon {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+            font-size: 40px;
+            color: white;
+            transition: var(--transition);
+            position: relative;
+        }
+        
+        .card-icon::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: inherit;
+            z-index: -1;
+            animation: ripple 2s infinite;
+        }
+        
+        @keyframes ripple {
+            0% { transform: scale(1); opacity: 0.8; }
+            100% { transform: scale(1.6); opacity: 0; }
+        }
+        
+        .citizen .card-icon {
+            background: linear-gradient(135deg, var(--secondary), #3d9e8f);
+            box-shadow: 0 10px 25px rgba(76, 161, 175, 0.3);
+        }
+        
+        .employee .card-icon {
+            background: linear-gradient(135deg, var(--accent), #ff6347);
+            box-shadow: 0 10px 25px rgba(255, 126, 95, 0.3);
+        }
+        
+        .card h3 {
+            margin-bottom: 20px;
+            color: var(--dark);
+            font-size: 26px;
+            font-weight: 800;
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        .card h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 50%;
+            transform: translateX(50%);
+            width: 60px;
+            height: 3px;
+            background: var(--primary);
+            border-radius: 3px;
+        }
+        
+        .citizen h3::after {
+            background: var(--secondary);
+        }
+        
+        .employee h3::after {
+            background: var(--accent);
+        }
+        
+        .card p {
+            font-size: 17px;
+            color: var(--text-light);
+            line-height: 1.8;
+            margin-bottom: 30px;
+            flex-grow: 1;
+        }
+        
+        .features {
+            text-align: right;
+            margin: 20px 0 30px;
+            padding-right: 15px;
+        }
+        
+        .features li {
+            list-style-type: none;
+            padding: 8px 0;
+            font-size: 15px;
+            color: var(--text-light);
+            position: relative;
+            padding-right: 25px;
+        }
+        
+        .features li::before {
+            content: '✓';
+            position: absolute;
+            right: 0;
+            top: 8px;
+            color: var(--success);
+            font-weight: bold;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--primary), var(--dark));
+            color: white;
+            padding: 15px 35px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 17px;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 7px 20px rgba(44, 111, 187, 0.3);
+            margin-top: auto;
+        }
+        
+        .btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(44, 111, 187, 0.4);
+        }
+        
+        .btn i {
+            margin-left: 10px;
+            transition: transform 0.3s ease;
+        }
+        
+        .btn:hover i {
+            transform: translateX(5px);
+        }
+        
+        .citizen .btn {
+            background: linear-gradient(135deg, var(--secondary), #3d9e8f);
+            box-shadow: 0 7px 20px rgba(76, 161, 175, 0.3);
+        }
+        
+        .employee .btn {
+            background: linear-gradient(135deg, var(--accent), #ff6347);
+            box-shadow: 0 7px 20px rgba(255, 126, 95, 0.3);
+        }
+        
+        .ticker-container {
+            position: fixed;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            background: linear-gradient(90deg, var(--dark), var(--primary));
+            color: white;
+            padding: 18px 0;
+            overflow: hidden;
+            box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.15);
+            z-index: 10;
+        }
+        
+        .ticker-content {
+            display: inline-block;
+            padding-right: 100%;
+            animation: ticker 40s linear infinite;
+            white-space: nowrap;
+            direction: ltr; /* تغيير اتجاه النص */
+        }
+        
+        .ticker-icon {
+            margin-right: 20px; /* تعديل اتجاه الأيقونة */
+            font-size: 22px;
+            animation: bounce 2s infinite;
+            color: var(--accent);
+            display: inline-block;
+        }
+        
+        .ticker-text {
+            font-size: 16px;
+            font-weight: 500;
+            direction: rtl; /* عكس اتجاه النص */
+            display: inline-block;
+        }
+        
+        @keyframes ticker {
+            0% { transform: translateX(-0%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-7px); }
+        }
+        
+        @media (max-width: 992px) {
+            .cards-container {
+                grid-template-columns: 1fr;
+                max-width: 600px;
+                margin: 0 auto;
+            }
+            
+            .manager-title {
+                font-size: 17px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .manager-badge-large {
+                width: 220px;
+                height: 220px;
+            }
+            
+            .manager-title {
+                font-size: 16px;
+            }
+            
+            .card {
+                padding: 30px;
+            }
+            
+            body::before {
+                height: 38vh;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .manager-badge-large {
+                width: 180px;
+                height: 180px;
+            }
+            
+            .card {
+                padding: 25px 20px;
+            }
+            
+            .card-icon {
+                width: 80px;
+                height: 80px;
+                font-size: 36px;
+            }
+            
+            .card h3 {
+                font-size: 22px;
+            }
+            
+            .card p {
+                font-size: 16px;
+            }
+            
+            .features li {
+                font-size: 14px;
+            }
+            
+            .btn {
+                padding: 14px 30px;
+                font-size: 16px;
+            }
+            
+            body {
+                padding-bottom: 100px;
+            }
+            
+            .ticker-container {
+                bottom: 15px;
+                padding: 15px 0;
+            }
+            
+            .manager-title {
+                font-size: 15px;
+                padding: 12px;
+                line-height: 1.7;
+            }
+            
+            .splash-logo {
+                width: 110px;
+                height: 110px;
+            }
+            
+            .splash-logo i {
+                font-size: 55px;
+            }
+            
+            .splash-text {
+                font-size: 20px;
+            }
+            
+            .splash-subtext {
+                font-size: 15px;
+                padding: 0 15px;
+            }
+            
+            .loading-bar {
+                width: 250px;
+            }
+            
+            .ticker-text {
+                font-size: 14px;
+            }
+        }
+        
+        @media (max-width: 400px) {
+            .manager-title {
+                font-size: 14px;
+            }
+            
+            .ticker-text {
+                font-size: 13px;
+            }
+            
+            .cards-container {
+                gap: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="splash" class="splash">
+        <div class="splash-content">
+            <div class="splash-logo">
+                <i class="fas fa-handshake"></i>
+            </div>
+            <div class="splash-text">نظام طلب مقابلة المدير العام</div>
+            <div class="splash-subtext">نظام متكامل لتمكين المواطنين والموظفين من التواصل المباشر مع الإدارة العليا</div>
+            <div class="loading-bar">
+                <div class="loading-progress"></div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="mainContent" class="container">
+        <header>
+            <div class="manager-badge-large">
+                <img src="https://scontent.fbgw66-1.fna.fbcdn.net/v/t39.30808-6/509427172_122094416702926905_74943589268176730_n.jpg?_nc_cat=110&ccb=1-7&_nc_sid=cc71e4&_nc_ohc=S1Eagx9gw6MQ7kNvwGVf0G1&_nc_oc=Adlwz5xsF36jed8IGr87fE-U3vj-b3Yqu-LQ2sqMGD_aecIwyuSmFIOasrFY6IVffkY&_nc_zt=23&_nc_ht=scontent.fbgw66-1.fna&_nc_gid=ApSpTvrmDbmpAKDwlafgbA&oh=00_AfSw7iKcxoSef8OpEdmv3_O8rFhlCxunUO_wJqVYVX7n7g&oe=6875D346" alt="صورة المدير العام">
+            </div>
+            <h1 class="manager-title">مقابلة مدير عام الدائرة الادارية والمالية لوزارة الكهرباء<br>الاستاذ عمر سليم البلداوي</h1>
+        </header>
+        
+        <div class="cards-container">
+            <div class="card citizen">
+                <div class="card-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h3>للمواطنين</h3>
+                <p>إذا كنت مواطناً وتواجه مشكلة في الخدمة أو لديك اقتراح لتحسين الخدمات، يرجى تعبئة هذا النموذج وسيتم التواصل معك في أقرب وقت.</p>
+                
+                <ul class="features">
+                    <li>تقديم شكوى أو اقتراح</li>
+                    <li>طلب توضيح حول خدمة معينة</li>
+                    <li>الإبلاغ عن مشكلة تواجهها</li>
+                    <li>تقديم فكرة لتحسين الخدمات</li>
+                </ul>
+                
+                <button class="btn" onclick="window.open('https://forms.gle/37faRAiBZchjwoJT9')">
+                      تقديم طلب مقابلة <i class="fas fa-arrow-left"></i>
+                </button>
+            </div>
+            
+            <div class="card employee">
+                <div class="card-icon">
+                    <i class="fas fa-user-tie"></i>
+                </div>
+                <h3>للموظفين</h3>
+                <p>إذا كنت موظفاً وترغب في مقابلة المدير العام بخصوص أمور وظيفية أو تطويرية، استخدم هذا النموذج وسيتم تحديد موعد معك.</p>
+                
+                <ul class="features">
+                    <li>مناقشة أمور وظيفية</li>
+                    <li>تقديم اقتراحات تطويرية</li>
+                    <li>مناقشة مشاريع جديدة</li>
+                    <li>طلب دعم لتحسين الأداء</li>
+                </ul>
+                
+                <button class="btn" onclick="window.open('https://forms.gle/X3drr2qarE8FCwUv5')">
+                      تقديم طلب مقابلة <i class="fas fa-arrow-left"></i>
+                </button>
+
+            </div>
+        </div>
+    </div>
+    
+    <div class="ticker-container">
+        <div class="ticker-content">
+            <span class="ticker-icon">⭐</span>
+            <span class="ticker-text">سيتم التواصل معكم من قبل (احمد نبيل محمد سكرتير المدير العام ورئيس فريق المتابعة المركزي) - شكراً - لثقتكم بنا</span>
+        </div>
+    </div>
+    
+    <script>
+        setTimeout(() => {
+            document.getElementById('splash').style.display = 'none';
+            document.getElementById('mainContent').style.display = 'block';
+            
+            // Add animation to cards after page load
+            setTimeout(() => {
+                const cards = document.querySelectorAll('.card');
+                cards.forEach((card, index) => {
+                    setTimeout(() => {
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    }, 200 * index);
+                });
+            }, 100);
+        }, 3000);
+        
+        // Initialize card animations
+        window.onload = function() {
+            const cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px)';
+                card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            });
+        };
+    </script>
+</body>
+</html>
